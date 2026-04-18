@@ -1,0 +1,23 @@
+# render.yaml  —  Render Blueprint (Infrastructure as Code)
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: worker            # Background worker — no inbound HTTP required for polling
+    name: telegram-bot
+    runtime: python
+    plan: free              # Change to "starter" ($7/mo) for always-on
+    region: singapore       # Closest to India; options: oregon, frankfurt, singapore
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    envVars:
+      - key: BOT_TOKEN
+        sync: false         # Set manually in Render dashboard (secret)
+      - key: MONGO_URI
+        sync: false         # Set manually in Render dashboard (secret)
+      - key: DB_NAME
+        value: telegram_bot
+      - key: EMOJI_ID
+        value: "5474667187258006816"
+      - key: PORT
+        value: "8080"
+    healthCheckPath: /health
